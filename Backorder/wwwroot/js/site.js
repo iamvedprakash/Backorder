@@ -77,4 +77,50 @@
         }
     }
 
+    $(document).ready(function () {
+        $('#uploadBtn').click(function () {
+            const fileInput = $('#fileInput')[0].files[0];
+            const formData = new FormData();
+            formData.append('file', fileInput);
+
+            $.ajax({
+                url: 'https://localhost:7035/Home/UpdateBulkData',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    alert('File uploaded successfully!');
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while uploading the file.');
+                }
+            });
+        });
+    });
+
+
 })
+
+
+
+var modal = document.getElementById("myModal");
+
+var btn = document.getElementById("myBtn");
+
+var span = document.getElementsByClassName("close")[0];
+
+btn.onclick = function () {
+    modal.style.display = "block";
+}
+
+span.onclick = function () {
+    modal.style.display = "none";
+}
+
+window.onclick = function (event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}

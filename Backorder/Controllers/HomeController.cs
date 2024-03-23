@@ -1,10 +1,14 @@
 ﻿using Backorder.Data;
 using Backorder.Models;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Bibliography;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace Backorder.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly backorderappcontext _context;
@@ -120,6 +124,77 @@ namespace Backorder.Controllers
             }
 
         }
+
+        public IActionResult DownloadTemplate()
+        {
+            string path = "../Content/StatusUpdate.xlsx";
+
+            var fileBytes = System.IO.File.ReadAllBytes(path);
+            return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "StatusUpdate.xlsx");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateBulkData()
+        {
+            var file = Request.Form.Files[0];
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file uploaded.");
+            }
+
+            var filePath = "../Temp/" + file.FileName; // Adjust the path as needed
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            using(var workbook = new XLWorkbook(filePath))
+            {
+                var worksheet = workbook.Worksheet(1);
+                var rows = worksheet.RowsUsed().Skip(2);
+
+                foreach(var row in rows)
+                {
+                    
+                    var itemrow = _context.backorderstatus.FirstOrDefault(m => m.Item == row.Cell(1).GetString());
+
+                    if(row.Cell(2) != null)
+                    {
+                        itemrow.Issue = row.Cell(2).GetString();
+                    }
+                    
+                    if(row.Cell(3) != null)
+                    {
+                        itemrow.Comment = row.Cell(3).GetString();
+                    }
+                    
+                    if(!row.Cell(4).IsEmpty())
+                    {
+                        itemrow.RecoveryDate = row.Cell(4).GetDateTime();
+                    }
+                    
+                    if(!row.Cell(5).IsEmpty())
+                    {
+                        itemrow.POC = true;
+                    }
+                    else
+                    {
+                        itemrow.POC = false;
+                    }
+                    
+                    itemrow.ModifiedBy = "System";
+                    itemrow.ModifiedDate = DateTime.Now;
+
+                    _context.Update(itemrow);
+                    
+                }
+
+                _context.SaveChanges();
+            }
+
+            return Ok();
+        }
+    
 
         public void setSummaryData()
         {
