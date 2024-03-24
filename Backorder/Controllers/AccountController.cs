@@ -19,39 +19,60 @@ namespace Backorder.Controllers
             _context = context;
         }
 
+        [HttpGet]
         public IActionResult Login()
         {
-            return View("Index");
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            return View();
+        }
+
+        public IActionResult Logout()
+        {
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Account");
         }
 
         [HttpPost]
         public async Task<IActionResult> Login(users model)
         {
-            var user = _context.users.FirstOrDefault(u => u.username == model.username && u.password == model.password);
-
-            if (user != null)
+            
+            if (ModelState.IsValid)
             {
-                var claims = new[]
+                // Implement your authentication logic here.
+                // Check the user's credentials and sign in if valid.
+
+                var user = _context.users.Where(m => m.username == model.username && m.password == model.password).Count();
+                //var user = _context.Users.Count
+
+                if (user == 1)
                 {
-                    new Claim(ClaimTypes.Name, user.username),
-                };
 
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var principal = new ClaimsPrincipal(identity);
+                    // Sign in the user using the SignInAsync method
+                    var claims = new List<Claim> { new Claim(ClaimTypes.Name, model.username) }; // You can use a different property for the user's name.
+                                                                                                 // Add other claims as needed.
 
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                return RedirectToAction("Index", "Home");
+                    var principal = new ClaimsPrincipal(identity);
+
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+                    // Redirect the user to a protected page or the home page upon successful login.
+
+
+                    return RedirectToAction("Index", "Home");
+                }
+
+                // If the user authentication fails, show an error message.
+                ViewData["LoginError"] = "Provide correct user name and password";
+                ModelState.AddModelError("", "Invalid credentials.");
             }
 
-            return RedirectToAction("Login");
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login");
+            // If there are any validation errors, return the view with the model.
+            return View(model);
         }
     }
 }

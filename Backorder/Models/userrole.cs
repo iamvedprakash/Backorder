@@ -2,14 +2,13 @@
 
 namespace Backorder.Models
 {
-    public class users
+    public class userrole
     {
         [Key]
-        public int Id { get; set; }
+        public int Is { get; set; }
 
         public string username { get; set; }
 
-        public string password { get; set; }
-
+        public string role { get; set; }
     }
 }

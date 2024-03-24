@@ -19,22 +19,31 @@
                     <ul class="navbar-nav me-auto">
                     </ul>
                     <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="DownloadTemplate" style="color: white;">Excel Template</a>
-                        </li>
-                        <li class="nav-item">
-                            <button id="myBtn" class="btn btn-primary">UpdateStatus</button>
-                            <div id="myModal" class="modal">
-                                <div class="modal-content">
-                                    <span class="close">&times;</span>
-                                    <input type="file" id="fileInput" class="form-input" />
-                                    <button id="uploadBtn" class="btn btn-primary">upload</button>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Logout" style="color: white;">Logout</a>
-                        </li>
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="DownloadTemplate" style="color: white;">Excel Template</a>
+                            </li>
+                            @if(ViewBag.Role == "W")
+                            {
+                                <li class="nav-item">
+                                    <button id="myBtn" class="btn btn-primary">UpdateStatus</button>
+                                    <div id="myModal" class="modal">
+                                        <div class="modal-content">
+                                            <span class="close">&times;</span>
+                                            <input type="file" id="fileInput" class="form-input" />
+                                            <button id="uploadBtn" class="btn btn-primary">upload</button>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Logout" style="color: white;">Logout</a>
+                            </li>
+                        }
+
+                        
                     </ul>
                 </div>
 

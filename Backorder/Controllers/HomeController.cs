@@ -12,14 +12,20 @@ namespace Backorder.Controllers
     public class HomeController : Controller
     {
         private readonly backorderappcontext _context;
+        private string username;
 
         public HomeController(backorderappcontext context)
         {
             _context = context;
+
         }
         public IActionResult Index()
         {
             var backordersummary = _context.backordersummary.ToList();
+            username = User.Identity.Name;
+            var userrole = _context.userrole.Where(m => m.username == username).ToList()[0].role;
+            ViewBag.role = userrole;
+
             return View(backordersummary);
         }
 
@@ -37,7 +43,7 @@ namespace Backorder.Controllers
             itemrow.Comment       = comment;
             itemrow.RecoveryDate  = recoverydate;
             itemrow.POC           = POC;
-            itemrow.ModifiedBy    = "System";
+            itemrow.ModifiedBy    = User.Identity.Name;
             itemrow.ModifiedDate  = DateTime.Now;
 
             _context.Update(itemrow);
@@ -182,7 +188,7 @@ namespace Backorder.Controllers
                         itemrow.POC = false;
                     }
                     
-                    itemrow.ModifiedBy = "System";
+                    itemrow.ModifiedBy   = User.Identity.Name;
                     itemrow.ModifiedDate = DateTime.Now;
 
                     _context.Update(itemrow);

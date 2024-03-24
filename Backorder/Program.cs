@@ -13,11 +13,11 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<backorderappcontext>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/Account/Login";
-        options.LogoutPath = "/Account/Logout";
-    });
+        .AddCookie(options =>
+        {
+            options.LoginPath = "/Account/Login"; // Replace with your login page URL
+            options.AccessDeniedPath = "/Account/AccessDenied"; // Replace with your access denied page URL
+        });
 
 var app = builder.Build();
 

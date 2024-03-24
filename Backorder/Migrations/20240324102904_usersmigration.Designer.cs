@@ -4,6 +4,7 @@ using Backorder.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backorder.Migrations
 {
     [DbContext(typeof(backorderappcontext))]
-    partial class backorderappcontextModelSnapshot : ModelSnapshot
+    [Migration("20240324102904_usersmigration")]
+    partial class usersmigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -88,27 +90,6 @@ namespace Backorder.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("backordersummary");
-                });
-
-            modelBuilder.Entity("Backorder.Models.userrole", b =>
-                {
-                    b.Property<int>("Is")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Is"), 1L, 1);
-
-                    b.Property<string>("role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Is");
-
-                    b.ToTable("userrole");
                 });
 
             modelBuilder.Entity("Backorder.Models.users", b =>

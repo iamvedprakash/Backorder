@@ -44,29 +44,70 @@
                 <input type="text" id="item" name="item" class="form-control" readonly>
 
                 <label for="issue" class="form-label"><b>Issue:</b></label>
-                <select id="issue" name="issue" class="form-control">
-                    <option value=""></option>
-                    <option value="Manufacturing Issue">Manufacturing Issue</option>
-                    <option value="Supply Issue">Supply Issue</option>
-                    <option value="Other">Other</option>
-                </select>
+                @if (ViewBag.Role == "W")
+                {
+                    <select id="issue" name="issue" class="form-control">
+                        <option value=""></option>
+                        <option value="Manufacturing Issue">Manufacturing Issue</option>
+                        <option value="Supply Issue">Supply Issue</option>
+                        <option value="Other">Other</option>
+                    </select>
+                }
+                else
+                {
+                    <select id="issue" name="issue" class="form-control" readonly>
+                        <option value=""></option>
+                        <option value="Manufacturing Issue">Manufacturing Issue</option>
+                        <option value="Supply Issue">Supply Issue</option>
+                        <option value="Other">Other</option>
+                    </select>
+                }
+                
 
                 <label for="comment" class="form-label"><b>Comment:</b></label>
-                <textarea id="comment" name="comment" class="form-control"></textarea>
+                @if (ViewBag.Role == "W")
+                {
+                    <textarea id="comment" name="comment" class="form-control"></textarea>
+                }
+                else
+                {
+                    <textarea id="comment" name="comment" class="form-control" readonly></textarea>
+                }
+                
 
                 <label for="recovery-date" class="form-label"><b>Recovery Date:</b></label>
-                <input type="date" id="recovery-date" name="recovery-date" value="" placeholder="dd-mm-yyyy" class="form-control">
+                @if (ViewBag.Role == "W")
+                {
+                    <input type="date" id="recovery-date" name="recovery-date" value="" placeholder="dd-mm-yyyy" class="form-control">
+                }
+                else
+                {
+                    <input type="date" id="recovery-date" name="recovery-date" value="" placeholder="dd-mm-yyyy" class="form-control" readonly>
+                }
+                
 
                 <label for="poc" class="form-label"><b>POC:</b></label>
-                <input type="checkbox" id="poc" name="poc" class="form-check">
+                @if (ViewBag.Role == "W")
+                {
+                    <input type="checkbox" id="poc" name="poc" class="form-check" >
+                }
+                else
+                {
+                    <input type="checkbox" id="poc" name="poc" class="form-check" disabled>
+                }
+
 
                 <label for="modify-by" class="form-label"><b>Modify By:</b></label>
                 <input type="text" id="modify-by" name="modify-by" class="form-control" readonly>
-
+                
                 <label for="modify-date" class="form-label"><b>Modify Date:</b></label>
                 <input type="date" id="modify-date" name="modify-date" value="" placeholder="dd-mm-yyyy" class="form-control" readonly>
 
-                <button type="submit" id="staussubmit" class="btn btn-primary">Submit</button>
+                @if (ViewBag.Role == "W")
+                {
+                    <button type="submit" id="staussubmit" class="btn btn-primary">Submit</button>
+                }
+                
                 <button type="submit" id="exportdata" class="btn btn-primary">Export</button>
                 
             </form> 
